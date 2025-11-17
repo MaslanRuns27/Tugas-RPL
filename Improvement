@@ -127,7 +127,7 @@ Manfaat:
 
 ---
 
-## 🧠 **Kesimpulan**
+Kesimpulan
 
 > Dengan implementasi arsitektur modular, pola desain tambahan (Observer, Strategy, Decorator), serta pengelolaan dependensi yang lebih baik menggunakan Dependency Injection, sistem toko online akan:
 >
