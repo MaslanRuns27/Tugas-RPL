@@ -1,0 +1,136 @@
+1. Arsitektur Sistem – Modul & Layer yang Lebih Terstruktur**
+
+Masalah saat ini:
+Desain masih bersifat *monolitik sederhana* di mana logika penjual, pembeli berada di satu sistem.
+Hal ini menyulitkan jika sistem tumbuh besar atau butuh integrasi pihak ketiga.
+
+Usulan Peningkatan:
+Gunakan pendekatan modular architecture atau layered architecture dengan 4 lapisan utama:
+
+1. Presentation Layer (UI/Frontend)
+2. Business Logic Layer (Service)
+3. Data Access Layer (Repository)
+4. Database Layer
+
+Manfaat:
+✅ Memudahkan pemeliharaan dan pengujian
+✅ Memisahkan logika bisnis dari UI dan database
+✅ Siap dikembangkan menjadi *microservices* di masa depan
+
+---
+
+2️. Pola Desain Tambahan untuk Fitur Baru
+
+Tambahkan pola desain tambahan untuk fitur lanjutan toko online.
+
+| Fitur Baru                | Pola Desain       | Fungsi                                                                                                      |
+| ------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------- |
+| Notifikasi Pesanan        | Observer Pattern  | Mengirim notifikasi otomatis ke pembeli dan penjual saat status pesanan berubah (misal: “Pesanan dikirim”). |
+| Sistem Pembayaran Online  | Strategy Pattern  | Memilih metode pembayaran berbeda (Midtrans, Dana, OVO, COD) tanpa ubah logika utama.                       |
+| Manajemen Diskon & Promo  | Decorator Pattern | Menambahkan fitur promo tanpa mengubah class produk asli.                                                   |
+| Wishlist / Favorit Produk | Prototype Pattern | Duplikasi data produk favorit pengguna tanpa mengubah produk aslinya.                                       |
+
+Manfaat:
+✅ Desain lebih fleksibel
+✅ Penambahan fitur baru tidak merusak struktur lama
+✅ Pola desain mendukung prinsip *Open/Closed Principle (OCP)*
+
+3️. Peningkatan Dependency Injection (DI)
+
+Masalah:
+Dependency Injection masih dilakukan secara manual.
+
+Usulan Peningkatan:
+Gunakan Inversion of Control (IoC) Container untuk mengelola dependensi otomatis.
+Jika menggunakan framework seperti Laravel atau Spring Boot, ini sudah tersedia secara bawaan.
+
+Contoh Penerapan:
+
+// Contoh Laravel Service Container
+public function __construct(ProductRepositoryInterface $productRepo)
+{
+    $this->productRepo = $productRepo;
+}
+```
+
+Manfaat:
+✅ Mengurangi *tight coupling* antar class
+✅ Memudahkan testing (mock repository)
+✅ Menambah fleksibilitas bila nanti ingin ganti database (MySQL → PostgreSQL)
+
+4️. Optimasi Database & Caching
+
+Masalah:
+Semua query produk dan pesanan langsung diambil dari database, yang berpotensi memperlambat sistem saat data membesar.
+
+Usulan Peningkatan:
+
+1. Tambahkan cache layer (misalnya Redis atau Memcached).
+2. Gunakan indexing pada kolom pencarian (nama produk, kategori).
+3. Implementasikan pagination dan lazy loading.
+
+Manfaat:
+✅ Meningkatkan performa sistem
+✅ Mengurangi beban server database
+✅ Skalabilitas lebih tinggi
+
+5️. Keamanan & Privasi Data
+
+Masalah:
+Belum ada pembagian hak akses detail antara pembeli, penjual, dan admin.
+
+Usulan Peningkatan:
+
+* Terapkan Role-Based Access Control (RBAC).
+* Enkripsi data sensitif (password, alamat, transaksi).
+* Validasi input di backend & frontend.
+
+Manfaat:
+✅ Data lebih aman
+✅ Mengurangi risiko serangan (SQL Injection, XSS)
+✅ Mematuhi prinsip keamanan aplikasi modern
+
+6️. Fitur Tambahan untuk User Experience
+
+| Fitur                       | Deskripsi                                                                   | Manfaat                                |
+| --------------------------- | --------------------------------------------------------------------------- | -------------------------------------- |
+| Live Chat Penjual – Pembeli | Interaksi langsung antara pengguna.                                         | Meningkatkan kepercayaan & kenyamanan. |
+| Tracking Pengiriman         | Integrasi API ekspedisi (JNE, SiCepat, Anteraja).                           | Pembeli bisa memantau status pesanan.  |
+| Rekomendasi Produk          | Menggunakan *Recommendation Engine* sederhana (produk serupa atau populer). | Menambah potensi penjualan.            |
+| Dashboard Analitik          | Menampilkan grafik penjualan & performa produk.                             | Membantu penjual mengambil keputusan.  |
+
+7️. Peningkatan dari Sisi Pengujian dan CI/CD
+
+Masalah:
+Sistem belum memiliki proses pengujian otomatis.
+
+Usulan:
+
+* Tambahkan unit testing dan integration testing.
+* Gunakan GitHub Actions / GitLab CI/CD untuk deployment otomatis.
+
+Manfaat:
+✅ Meningkatkan kualitas kode
+✅ Memastikan stabilitas sistem sebelum rilis
+✅ Menurunkan risiko bug di versi produksi
+
+8️. Ringkasan Evaluasi Usulan
+
+| Aspek       | Kondisi Sekarang     | Usulan                           | Dampak            |
+| ----------- | -------------------- | -------------------------------- | ----------------- |
+| Arsitektur  | Monolitik            | Modular / Layered                | Maintainability ↑ |
+| Desain Pola | 3 Creational Pattern | Tambah Behavioral & Structural   | Flexibility ↑     |
+| Database    | Query langsung       | Caching & Indexing               | Performance ↑     |
+| Keamanan    | Login dasar          | RBAC & Validasi                  | Security ↑        |
+| UX/UI       | Fitur dasar          | Live Chat, Tracking, Rekomendasi | User Experience ↑ |
+| Testing     | Manual               | CI/CD Pipeline                   | Reliability ↑     |
+
+---
+
+## 🧠 **Kesimpulan**
+
+> Dengan implementasi arsitektur modular, pola desain tambahan (Observer, Strategy, Decorator), serta pengelolaan dependensi yang lebih baik menggunakan Dependency Injection, sistem toko online akan:
+>
+> Lebih **mudah dikembangkan** (extensible)
+> Lebih **aman** dan **cepat**
+> Siap untuk **skala besar** dan integrasi API eksternal
